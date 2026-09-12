@@ -1,0 +1,6 @@
+# PROJECT: BEYOND THE FACADE - Physiological Response Monitoring Prototype
+# DISCLAIMER: Educational/Research Prototype Only. Not a medical diagnostic device or lie detector.
+timestamp_iso,elapsed_seconds,raw_signal,bpm,mode,event
+2026-09-12T03:14:28.218654,0.927,512,197,HARDWARE,
+2026-09-12T03:14:28.322476,1.031,512,197,HARDWARE,INQUIRY PRESENTED: [SPIKE] A rapid pulse spike! Did you just think about something you shouldn't have?
+2026-09-12T03:14:36.042597,8.751,512,197,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Noticeable cardiovascular reactivity. Trying hard to stay composed?

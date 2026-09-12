@@ -1,0 +1,16 @@
+{
+  "session_id": "20260912_074609",
+  "session_name": "FullRampTest",
+  "mode": "DEMO",
+  "duration_seconds": 6.04,
+  "duration_formatted": "00:06",
+  "total_samples": 195,
+  "bpm_samples_count": 195,
+  "average_bpm": 78.4,
+  "minimum_bpm": 70,
+  "maximum_bpm": 82,
+  "baseline_bpm": 78.4,
+  "max_change_from_baseline": 0.0,
+  "csv_filename": "session_20260912_074609.csv",
+  "csv_path": "D:\\useless\\data\\sessions\\session_20260912_074609.csv"
+}

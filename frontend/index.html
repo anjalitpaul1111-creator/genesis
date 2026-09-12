@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BEYOND THE FACADE | Real-Time Physiological Response Monitoring</title>
+  <meta name="description" content="College hardware-software prototype for real-time pulse signal acquisition, photoplethysmogram oscilloscope visualization, baseline analysis, and session telemetry.">
+  
+  <!-- Modern Engineering Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-badge">
+          <svg class="pulse-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">BEYOND THE FACADE</h1>
+          <p class="brand-subtitle">Real-Time Physiological Response Monitoring</p>
+        </div>
+      </div>
+
+      <!-- Center Non-Medical Notice Badge -->
+      <div class="research-disclaimer-pill">
+        <span class="pill-dot"></span>
+        <span>RESEARCH PROTOTYPE • NON-DIAGNOSTIC • NOT A LIE DETECTOR</span>
+      </div>
+
+      <!-- Header Status Group -->
+      <div class="header-status-group">
+        <div id="demoBanner" class="demo-badge hidden">
+          <span class="demo-pulse"></span>
+          <span>DEMO MODE — SIMULATED DATA</span>
+        </div>
+        
+        <div class="connection-pill" id="connPill">
+          <span class="status-dot disconnected" id="connDot"></span>
+          <span id="connPillText">DISCONNECTED</span>
+        </div>
+
+        <div class="clock-display" id="systemClock">00:00:00</div>
+      </div>
+    </header>
+
+    <!-- Main Grid Layout -->
+    <main class="dashboard-grid">
+      
+      <!-- Top Bar: Hardware Connection & Session Controls -->
+      <section class="card top-controls-card">
+        <div class="controls-row">
+          
+          <!-- Hardware Connection Module -->
+          <div class="control-subgroup hardware-group">
+            <div class="subgroup-title">
+              <span class="icon">🔌</span> ARDUINO SERIAL LINK
+            </div>
+            <div class="input-inline">
+              <div class="select-wrapper">
+                <select id="comPortSelect" class="custom-select" title="Select COM Port">
+                  <option value="">Scanning COM Ports...</option>
+                </select>
+              </div>
+
+              <button id="refreshPortsBtn" class="btn btn-secondary btn-icon" title="Refresh available ports">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+              </button>
+
+              <select id="baudRateSelect" class="custom-select baud-select" title="Baud Rate">
+                <option value="9600" selected>9600 baud</option>
+                <option value="115200">115200 baud</option>
+                <option value="57600">57600 baud</option>
+              </select>
+
+              <button id="connectBtn" class="btn btn-primary">CONNECT</button>
+              <button id="disconnectBtn" class="btn btn-danger" disabled>DISCONNECT</button>
+              <button id="inspectHardwareBtn" class="btn btn-secondary btn-hw-inspect" title="Inspect raw COM3 hardware data feed">
+                <span class="icon">🔬</span> HARDWARE INSPECTOR
+              </button>
+            </div>
+          </div>
+
+          <!-- Mode Selector (Hardware vs Demo) -->
+          <div class="control-subgroup mode-group">
+            <div class="subgroup-title">
+              <span class="icon">⚡</span> OPERATION MODE
+            </div>
+            <div class="mode-toggle-container">
+              <button id="modeHardwareBtn" class="mode-btn active">
+                <span class="mode-icon">📟</span> REAL HARDWARE
+              </button>
+              <button id="modeDemoBtn" class="mode-btn">
+                <span class="mode-icon">🧪</span> DEMO SIMULATION
+              </button>
+            </div>
+          </div>
+
+          <!-- Session Controls & Timer -->
+          <div class="control-subgroup session-group">
+            <div class="subgroup-title">
+              <span class="icon">⏱️</span> SESSION RECORDING
+            </div>
+            <div class="session-actions">
+              <div class="session-timer-display" id="sessionTimer">00:00.00</div>
+              <button id="startSessionBtn" class="btn btn-success start-session-prompt-glow">START SESSION</button>
+              <button id="pauseSessionBtn" class="btn btn-warning" disabled>PAUSE</button>
+              <button id="endSessionBtn" class="btn btn-danger-outline" disabled>END SESSION</button>
+              <button id="clearSessionBtn" class="btn btn-secondary">CLEAR</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Baseline Progress Indicator Banner -->
+        <div id="baselineProgressBanner" class="baseline-banner hidden">
+          <div class="banner-content">
+            <div class="spinner"></div>
+            <span id="baselineBannerText">ACQUIRING BASELINE PHYSIOLOGICAL PERIOD (0s / 15s)...</span>
+          </div>
+          <div class="progress-track">
+            <div id="baselineProgressBar" class="progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hardware Live Verification Strip -->
+      <div id="hardwareLiveBanner" class="hardware-live-strip">
+        <div class="strip-left">
+          <span class="strip-dot online" id="stripLiveDot"></span>
+          <span id="stripStatusText"><strong>ARDUINO COM3 ONLINE:</strong> Optical Pulse Sensor Ready • Zero Dummy Data</span>
+        </div>
+        <div class="strip-right">
+          <span id="stripPromptInstruction" class="strip-instruction">👉 Click <strong>START SESSION</strong> to display live heart rate</span>
+        </div>
+      </div>
+
+      <!-- Row 2: Hero Stage - Real-Time Sensor Reading & Active Question Display (Side-by-Side) -->
+      <section class="hero-stage-grid">
+        
+        <!-- Left Hero Card: Live Sensor Reading & Pulse Monitor -->
+        <div class="card metric-card primary-bpm-card hero-sensor-card">
+          <div class="card-header">
+            <div class="header-title-group">
+              <span class="card-label">PHYSIOLOGICAL SENSOR READING</span>
+              <span class="sensor-pin-pill">ANALOG PIN A0</span>
+            </div>
+            <div class="header-right-badges">
+              <span id="hardwareTruthPill" class="source-pill source-hardware">100% SENSOR HARDWARE</span>
+              <div class="heartbeat-indicator" id="heartIndicator" title="Synchronized Pulse Beat">
+                <svg class="heart-svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="bpm-hero-content">
+            <div class="bpm-main-value">
+              <span id="liveBpmVal" class="huge-number">--</span>
+              <div class="bpm-unit-group">
+                <span class="bpm-unit">BPM</span>
+                <span id="fingerStatusBadge" class="status-chip chip-cyan">FINGER DETECTED</span>
+              </div>
+            </div>
+
+            <div class="bpm-status-container">
+              <span id="bpmStatusBadge" class="status-chip chip-neutral">INITIALIZING SENSOR...</span>
+              <div id="rawSensorSubtext" class="raw-sensor-subtext">Zero dummy data • Live optical sensor stream active</div>
+            </div>
+          </div>
+
+          <!-- Real-Time Raw Sensor ADC Voltage Strip -->
+          <div class="sensor-adc-strip">
+            <div class="adc-metric-col">
+              <span class="adc-label">OPTICAL SIGNAL (A0)</span>
+              <span id="rawSignalVal" class="adc-val">512</span>
+            </div>
+            <div class="adc-bar-wrapper">
+              <div class="mini-bar-track">
+                <div id="rawSignalBar" class="mini-bar-fill" style="width: 50%;"></div>
+              </div>
+              <div class="adc-range-labels">
+                <span>0 ADC</span>
+                <span class="threshold-marker">Threshold: 550</span>
+                <span>1023 ADC</span>
+              </div>
+            </div>
+            <div class="adc-state-col">
+              <span class="adc-label">SENSOR LOCK</span>
+              <span id="hardwareBeatVal" class="d-val text-emerald">READY (STANDBY)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Hero Card: Facade Inquiry Engine & Question Display on Screen -->
+        <div class="card inquiry-card hero-question-card" id="inquirySection">
+          <div class="card-header inquiry-header">
+            <div class="inquiry-title-group">
+              <div class="inquiry-badge">
+                <span class="pulse-ring"></span>
+                <span class="icon">❓</span>
+                <span class="badge-text">FACADE INQUIRY • QUESTION ON SCREEN</span>
+              </div>
+              <span id="inquiryCounterBadge" class="inquiry-counter-badge">INTERACTIVE INQUIRY</span>
+            </div>
+
+            <div class="inquiry-controls">
+              <button id="nextInquiryBtn" class="btn btn-sm btn-primary" title="Show Next Inquiry Question">
+                ⚡ NEXT QUESTION
+              </button>
+              <button id="manualInquiryBtn" class="btn btn-sm btn-secondary" title="Pick Random Inquiry Question">
+                🎲 RANDOM
+              </button>
+              <button id="voiceToggleBtn" class="btn btn-sm btn-secondary voice-btn" title="Toggle Voice Speech Synthesis">
+                <span id="voiceIcon">🔊</span> <span id="voiceLabel">VOICE: ON</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="inquiry-body">
+            <div class="inquiry-meta-row">
+              <div class="inquiry-trigger-indicator" id="inquiryTriggerBadge">
+                <span class="trigger-dot" id="triggerDot"></span>
+                <span id="inquiryTriggerText">ACTIVE INQUIRY PROTOCOL</span>
+              </div>
+              <div class="cooldown-tag" id="cooldownTag">
+                <span>COOLDOWN: READY</span>
+              </div>
+            </div>
+
+            <!-- Dominant Big Question Display on Screen -->
+            <div class="inquiry-prompt-box">
+              <p id="inquiryQuestion" class="inquiry-text">
+                "Are you hiding something from us today?"
+              </p>
+            </div>
+
+            <!-- Interactive Subject Response Buttons -->
+            <div class="inquiry-actions-row">
+              <span class="response-label">SUBJECT RESPONSE:</span>
+              <div class="response-buttons">
+                <button class="btn btn-response btn-yes" data-answer="YES">YES</button>
+                <button class="btn btn-response btn-no" data-answer="NO">NO</button>
+                <button class="btn btn-response btn-maybe" data-answer="MAYBE">MAYBE</button>
+                <button class="btn btn-response btn-plead" data-answer="I PLEAD THE 5TH">I PLEAD THE 5TH</button>
+              </div>
+            </div>
+
+            <!-- System Observation Feedback Banner -->
+            <div id="systemObservationBox" class="observation-box">
+              <span class="obs-icon">📊</span>
+              <span id="systemObservationText">Click an answer above while looking at your sensor reading to evaluate physiological response!</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Row 3: Baseline Analysis & Diagnostics Strip -->
+      <section class="sub-metrics-row">
+        
+        <!-- Baseline Analysis Card -->
+        <div class="card metric-card baseline-card">
+          <div class="card-header">
+            <span class="card-label">SESSION BASELINE ANALYSIS</span>
+            <span class="info-tag" id="baselineLockedTag">PENDING SESSION</span>
+          </div>
+          <div class="baseline-stats-grid">
+            <div class="b-stat">
+              <span class="b-label">BASELINE</span>
+              <span id="baselineBpmVal" class="b-value">-- <small>BPM</small></span>
+            </div>
+            <div class="b-stat">
+              <span class="b-label">CURRENT</span>
+              <span id="currentBpmCompareVal" class="b-value">-- <small>BPM</small></span>
+            </div>
+            <div class="b-stat highlight">
+              <span class="b-label">CHANGE (Δ)</span>
+              <span id="deltaBpmVal" class="b-value delta-neutral">0 <small>BPM</small></span>
+            </div>
+            <div class="b-stat highlight">
+              <span class="b-label">RESPONSE CHANGE</span>
+              <span id="deltaPctVal" class="b-value delta-neutral">0.0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Signal Diagnostics & Hardware Health Card -->
+        <div class="card metric-card diagnostics-card">
+          <div class="card-header">
+            <span class="card-label">SYSTEM HEALTH & STREAM METRICS</span>
+            <span class="info-tag">COM3 SERIAL</span>
+          </div>
+          <div class="diag-stats-grid">
+            <div class="d-item">
+              <span class="d-label">SAMPLE FREQUENCY</span>
+              <span id="sampleRateVal" class="d-val">35.0 Hz</span>
+            </div>
+            <div class="d-item">
+              <span class="d-label">HARDWARE LINK</span>
+              <span id="diagLinkVal" class="d-val text-emerald">ARDUINO COM3 ONLINE</span>
+            </div>
+            <div class="d-item">
+              <span class="d-label">PACKET ERRORS</span>
+              <span id="packetErrorsVal" class="d-val">0</span>
+            </div>
+            <div class="d-item">
+              <span class="d-label">TELEMETRY LATENCY</span>
+              <span class="d-val text-emerald">&lt; 30 ms</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Row 3: Live Serial Plotter Oscilloscope (DOMINANT FEATURE) -->
+      <section class="card waveform-section">
+        <div class="card-header graph-header">
+          <div class="graph-title-group">
+            <h2 class="graph-title">LIVE PULSE SIGNAL</h2>
+            <span class="graph-subtitle">Arduino Serial Plotter Stream (ADC Raw Signal vs Time)</span>
+          </div>
+          
+          <div class="graph-controls">
+            <div class="live-beacon">
+              <span class="beacon-dot"></span>
+              <span class="beacon-label">LIVE STREAM</span>
+            </div>
+            <button id="toggleScaleBtn" class="btn btn-sm btn-secondary" title="Switch between Auto-Scale and Full 0-1023 Scale">
+              AUTOSCALE: ON
+            </button>
+            <button id="pauseWaveformBtn" class="btn btn-sm btn-secondary">PAUSE GRAPH</button>
+            <button id="clearWaveformBtn" class="btn btn-sm btn-secondary">CLEAR</button>
+          </div>
+        </div>
+
+        <div class="canvas-container">
+          <canvas id="pulseCanvas" width="1200" height="320"></canvas>
+          <div id="waveformOverlayNotice" class="waveform-overlay hidden">
+            <span>GRAPH PAUSED</span>
+          </div>
+        </div>
+
+        <div class="waveform-footer">
+          <div class="footer-legend">
+            <span class="legend-item"><span class="legend-color cyan"></span> Photoplethysmogram (PPG) Waveform</span>
+            <span class="legend-item"><span class="legend-color threshold"></span> Optical Threshold (550)</span>
+          </div>
+          <div class="footer-time-info">
+            Window: Last 6.0 seconds | High-precision Canvas 60 FPS
+          </div>
+        </div>
+      </section>
+
+      <!-- Row 4: BPM Trend Graph -->
+      <section class="card trend-section">
+        <div class="card-header graph-header">
+          <div class="graph-title-group">
+            <h2 class="graph-title">BPM TREND HISTORY</h2>
+            <span class="graph-subtitle">Continuous Heart Rate Tracking with Baseline Reference</span>
+          </div>
+          <div class="graph-controls">
+            <button id="clearTrendBtn" class="btn btn-sm btn-secondary">CLEAR TREND</button>
+          </div>
+        </div>
+
+        <div class="canvas-container small-canvas">
+          <canvas id="trendCanvas" width="1200" height="180"></canvas>
+        </div>
+
+        <div class="waveform-footer">
+          <div class="footer-legend">
+            <span class="legend-item"><span class="legend-color green"></span> Heart Rate (BPM)</span>
+            <span class="legend-item"><span class="legend-color dashed-gold"></span> Baseline BPM Reference</span>
+          </div>
+          <div class="footer-time-info">
+            Full session chronological trend
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Row: Diagnostic Console & Quick Sessions -->
+      <section class="card bottom-row-card">
+        <div class="bottom-header">
+          <div class="tab-group">
+            <button id="tabConsoleBtn" class="tab-btn active">SERIAL PACKET CONSOLE</button>
+            <button id="tabSessionsBtn" class="tab-btn">SAVED SESSIONS & EXPORTS</button>
+          </div>
+          <div class="actions">
+            <button id="clearConsoleBtn" class="btn btn-sm btn-secondary">CLEAR LOG</button>
+          </div>
+        </div>
+
+        <!-- Tab 1: Live Packet Log -->
+        <div id="tabConsole" class="tab-content active">
+          <div class="console-box" id="serialConsole">
+            <div class="log-line info">[SYS] Beyond The Facade initialised. WebSocket connecting...</div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Sessions List -->
+        <div id="tabSessions" class="tab-content">
+          <div class="sessions-list-container" id="sessionsList">
+            <p class="text-muted">No recorded sessions yet. Click "START SESSION" to record a physiological session.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer Disclaimer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p><strong>BEYOND THE FACADE</strong> — College Hardware-Software Prototype Project.</p>
+        <p class="text-muted">Notice: This device records autonomic physiological pulse responses for engineering study. It is not intended, certified, or capable of medical diagnosis or truth verification.</p>
+      </div>
+    </footer>
+
+    <!-- Session Summary Modal Dialog -->
+    <div id="summaryModal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <h3 class="modal-title">SESSION SUMMARY ANALYSIS</h3>
+            <span id="modalSessionId" class="modal-session-tag">SESSION #20260912_0145</span>
+          </div>
+          <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="summary-grid">
+            <div class="sum-box">
+              <span class="sum-label">AVERAGE BPM</span>
+              <span id="sumAvgBpm" class="sum-val">78.4</span>
+            </div>
+            <div class="sum-box">
+              <span class="sum-label">MINIMUM BPM</span>
+              <span id="sumMinBpm" class="sum-val">68</span>
+            </div>
+            <div class="sum-box">
+              <span class="sum-label">MAXIMUM BPM</span>
+              <span id="sumMaxBpm" class="sum-val">92</span>
+            </div>
+            <div class="sum-box">
+              <span class="sum-label">BASELINE BPM</span>
+              <span id="sumBaselineBpm" class="sum-val">75.0</span>
+            </div>
+            <div class="sum-box highlight-box">
+              <span class="sum-label">MAX CHANGE FROM BASELINE</span>
+              <span id="sumMaxDelta" class="sum-val">+17.0 BPM</span>
+            </div>
+            <div class="sum-box">
+              <span class="sum-label">SESSION DURATION</span>
+              <span id="sumDuration" class="sum-val">03:45</span>
+            </div>
+          </div>
+
+          <div class="summary-disclaimer">
+            <span class="alert-icon">ℹ️</span>
+            <span>Recorded data reflects physiological heart rate and pulse wave dynamics. All statistics are exported directly into CSV format.</span>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="modalDownloadCsvBtn" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            EXPORT SESSION CSV
+          </button>
+          <button id="modalCloseBtn" class="btn btn-secondary">CLOSE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hardware Diagnostics & Live Stream Inspector Modal -->
+    <div id="hardwareModal" class="modal-backdrop hidden">
+      <div class="modal-card modal-lg">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <h3 class="modal-title">HARDWARE DIAGNOSTICS & COM STREAM INSPECTOR</h3>
+            <span id="diagHwPortBadge" class="modal-session-tag">PORT: COM3 (9600 BAUD)</span>
+          </div>
+          <button id="closeHwModalBtn" class="modal-close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Hardware Health Grid -->
+          <div class="summary-grid">
+            <div class="sum-box">
+              <span class="sum-label">COMMUNICATION LINK</span>
+              <span id="diagHwStatus" class="sum-val text-emerald">CONNECTED ●</span>
+            </div>
+            <div class="sum-box">
+              <span class="sum-label">DATA PROTOCOL DETECTED</span>
+              <span id="diagHwProtocol" class="sum-val">LEGACY (BPM ONLY)</span>
+            </div>
+            <div class="sum-box">
+              <span class="sum-label">RAW OPTICAL ADC STREAM</span>
+              <span id="diagHwRawStream" class="sum-val text-amber">PENDING SKETCH UPLOAD</span>
+            </div>
+            <div class="sum-box">
+              <span class="sum-label">SAMPLE FREQUENCY</span>
+              <span id="diagHwRate" class="sum-val">14.7 Hz</span>
+            </div>
+          </div>
+
+          <!-- Zero Fake Data Guarantee Banner -->
+          <div class="zero-fake-banner">
+            <span class="shield-icon">🛡️</span>
+            <div>
+              <strong>100% REAL HARDWARE GUARANTEE:</strong>
+              <p>Simulated pulse generation is completely OFF. All packets shown below are arriving in real-time across the USB cable directly from your physical Arduino on COM3.</p>
+            </div>
+          </div>
+
+          <!-- Live Raw Serial Terminal Feed -->
+          <div class="terminal-group">
+            <div class="terminal-header">
+              <span>LIVE SERIAL STREAM FROM ARDUINO (USB BUFFER)</span>
+              <span id="diagTerminalBytesCount">Active Feed</span>
+            </div>
+            <pre class="terminal-output" id="diagRawTerminal">Waiting for serial packets...</pre>
+          </div>
+
+          <!-- Diagnosis Recommendation Box -->
+          <div class="diagnosis-box" id="diagRecommendationBox">
+            <span class="diag-icon">💡</span>
+            <div id="diagRecommendationText">
+              Hardware is communicating and sending live pulse readings!
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="hwModalRefreshBtn" class="btn btn-primary">REFRESH DIAGNOSTICS</button>
+          <button id="hwModalCloseBtn" class="btn btn-secondary">CLOSE</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+# PROJECT: BEYOND THE FACADE - Physiological Response Monitoring Prototype
+# DISCLAIMER: Educational/Research Prototype Only. Not a medical diagnostic device or lie detector.
+timestamp_iso,elapsed_seconds,raw_signal,bpm,mode,event
+2026-09-12T03:53:40.304125,8.533,512,128,HARDWARE,
+2026-09-12T03:53:40.386920,8.616,512,128,HARDWARE,INQUIRY PRESENTED: [SPIKE] Elevated physiological reaction! Are you worried we'll uncover a secret?

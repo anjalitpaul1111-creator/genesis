@@ -1,0 +1,16 @@
+{
+  "session_id": "20260912_074754",
+  "session_name": "Session_1789179474329",
+  "mode": "HARDWARE",
+  "duration_seconds": 16.68,
+  "duration_formatted": "00:16",
+  "total_samples": 942,
+  "bpm_samples_count": 539,
+  "average_bpm": 93.2,
+  "minimum_bpm": 8,
+  "maximum_bpm": 240,
+  "baseline_bpm": 93.9,
+  "max_change_from_baseline": 8.9,
+  "csv_filename": "session_20260912_074754.csv",
+  "csv_path": "D:\\useless\\data\\sessions\\session_20260912_074754.csv"
+}

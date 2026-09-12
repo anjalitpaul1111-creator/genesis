@@ -1,0 +1,11 @@
+# PROJECT: BEYOND THE FACADE - Physiological Response Monitoring Prototype
+# DISCLAIMER: Educational/Research Prototype Only. Not a medical diagnostic device or lie detector.
+timestamp_iso,elapsed_seconds,raw_signal,bpm,mode,event
+2026-09-12T02:57:10.426445,0.120,512,0,HARDWARE,
+2026-09-12T02:57:10.661977,0.356,512,228,HARDWARE,INQUIRY PRESENTED: [ELEVATED] High physiological activation. Are you confident in your next answer?
+2026-09-12T02:57:26.818991,16.513,512,228,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Elevated physiological response registered. Care to explain what's causing the tension?
+2026-09-12T02:57:42.716237,32.410,512,228,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Noticeable cardiovascular reactivity. Trying hard to stay composed?
+2026-09-12T02:57:58.752194,48.446,512,228,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Noticeable cardiovascular reactivity. Trying hard to stay composed?
+2026-09-12T02:58:14.778973,64.473,512,228,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Elevated physiological response registered. Care to explain what's causing the tension?
+2026-09-12T02:58:27.706269,77.400,512,27,HARDWARE,
+2026-09-12T02:58:38.809673,88.504,512,27,HARDWARE,INQUIRY PRESENTED: [RESTING] Low autonomic reactivity detected. Are you completely unbothered?

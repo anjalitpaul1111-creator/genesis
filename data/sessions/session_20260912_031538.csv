@@ -1,0 +1,8 @@
+# PROJECT: BEYOND THE FACADE - Physiological Response Monitoring Prototype
+# DISCLAIMER: Educational/Research Prototype Only. Not a medical diagnostic device or lie detector.
+timestamp_iso,elapsed_seconds,raw_signal,bpm,mode,event
+2026-09-12T03:15:40.608354,1.723,512,33,HARDWARE,INQUIRY PRESENTED: [RESTING] Low autonomic reactivity detected. Are you completely unbothered?
+2026-09-12T03:15:48.108970,9.224,512,33,HARDWARE,INQUIRY PRESENTED: [RESTING] Remarkably calm pulse. What's your secret to staying completely unflappable?
+2026-09-12T03:15:57.856628,18.971,512,168,HARDWARE,
+2026-09-12T03:15:57.980305,19.095,512,168,HARDWARE,INQUIRY PRESENTED: [SPIKE] Sudden cardiovascular surge detected! Did that thought hit a nerve?
+2026-09-12T03:16:04.118121,25.233,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Your heart rate is elevated. Are you feeling the pressure of this demonstration?

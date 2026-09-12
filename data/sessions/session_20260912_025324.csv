@@ -1,0 +1,5 @@
+# PROJECT: BEYOND THE FACADE - Physiological Response Monitoring Prototype
+# DISCLAIMER: Educational/Research Prototype Only. Not a medical diagnostic device or lie detector.
+timestamp_iso,elapsed_seconds,raw_signal,bpm,mode,event
+2026-09-12T02:53:25.819574,1.052,512,0,HARDWARE,INQUIRY PRESENTED: [SPIKE] Your pulse just spiked! Are you hiding something?
+2026-09-12T02:53:26.349331,1.582,512,0,HARDWARE,ANSWER: NO | OBS: Subject responded 'NO' with elevated pulse!

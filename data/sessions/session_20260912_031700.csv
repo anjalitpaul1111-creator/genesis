@@ -1,0 +1,25 @@
+# PROJECT: BEYOND THE FACADE - Physiological Response Monitoring Prototype
+# DISCLAIMER: Educational/Research Prototype Only. Not a medical diagnostic device or lie detector.
+timestamp_iso,elapsed_seconds,raw_signal,bpm,mode,event
+2026-09-12T03:17:02.064396,1.891,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] High physiological activation. Are you confident in your next answer?
+2026-09-12T03:17:10.850622,10.678,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Noticeable cardiovascular reactivity. Trying hard to stay composed?
+2026-09-12T03:17:18.066440,17.893,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Elevated physiological response registered. Care to explain what's causing the tension?
+2026-09-12T03:17:26.877707,26.705,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Your heart rate is elevated. Are you feeling the pressure of this demonstration?
+2026-09-12T03:17:34.101886,33.929,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Your pulse is racing. Are you thinking about someone special right now?
+2026-09-12T03:17:42.913003,42.740,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Your pulse is racing. Are you thinking about someone special right now?
+2026-09-12T03:17:50.143060,49.970,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Your pulse is racing. Are you thinking about someone special right now?
+2026-09-12T03:17:58.879448,58.706,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Are you hiding your true reaction behind that calm face?
+2026-09-12T03:18:08.217173,68.044,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Your heart rate is elevated. Are you feeling the pressure of this demonstration?
+2026-09-12T03:18:14.995878,74.823,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Noticeable cardiovascular reactivity. Trying hard to stay composed?
+2026-09-12T03:18:26.298407,86.125,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] High physiological activation. Are you confident in your next answer?
+2026-09-12T03:18:30.931774,90.759,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Your heart rate is elevated. Are you feeling the pressure of this demonstration?
+2026-09-12T03:18:44.345867,104.173,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Your pulse is racing. Are you thinking about someone special right now?
+2026-09-12T03:18:46.950024,106.777,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Are you hiding your true reaction behind that calm face?
+2026-09-12T03:18:59.218006,119.045,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Your pulse is racing. Are you thinking about someone special right now?
+2026-09-12T03:19:02.973796,122.801,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Elevated physiological response registered. Care to explain what's causing the tension?
+2026-09-12T03:19:15.842585,135.669,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Your pulse is racing. Are you thinking about someone special right now?
+2026-09-12T03:19:18.972932,138.800,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Your heart rate is elevated. Are you feeling the pressure of this demonstration?
+2026-09-12T03:19:31.730592,151.557,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Are you hiding your true reaction behind that calm face?
+2026-09-12T03:19:35.001731,154.829,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Elevated physiological response registered. Care to explain what's causing the tension?
+2026-09-12T03:19:47.701880,167.529,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Are you hiding your true reaction behind that calm face?
+2026-09-12T03:19:51.039750,170.867,512,168,HARDWARE,INQUIRY PRESENTED: [ELEVATED] Your heart rate is elevated. Are you feeling the pressure of this demonstration?

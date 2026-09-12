@@ -1,0 +1,16 @@
+{
+  "session_id": "20260912_020755",
+  "session_name": "Automated_Validation_Session",
+  "mode": "DEMO",
+  "duration_seconds": 3.02,
+  "duration_formatted": "00:03",
+  "total_samples": 92,
+  "bpm_samples_count": 92,
+  "average_bpm": 68.5,
+  "minimum_bpm": 68,
+  "maximum_bpm": 69,
+  "baseline_bpm": 68.5,
+  "max_change_from_baseline": 0.0,
+  "csv_filename": "session_20260912_020755.csv",
+  "csv_path": "D:\\useless\\data\\sessions\\session_20260912_020755.csv"
+}
