@@ -8,7 +8,7 @@
 
 ## 🔹 About the Project
 
-**BEYOND THE FACADE** is a hardware + software system that measures a person's pulse signal and displays it in real time.
+**BEYOND THE FACADE** is a hardware + software system that measures a person's pulse signal and displays it in real time..
 
 The project combines:
 
