@@ -1,106 +1,239 @@
 # BEYOND THE FACADE
-### Real-Time Physiological Response Monitoring System
 
-> **ACADEMIC & RESEARCH DISCLAIMER:**
-> This software and hardware prototype is created for educational, engineering, and research demonstration.
-> It is **NOT** a medical diagnostic instrument and **NOT** a lie detector or deception analysis system.
-> Do not make clinical, medical, or veracity claims based on these measurements.
+## Real-Time Physiological Response Monitoring System
+
+> **Disclaimer:** This is an educational and research prototype. It is **not a medical device, lie detector, or deception-detection system**. The measured values should not be used for medical or psychological conclusions.
 
 ---
 
-## 1. Project Overview
+## 🔹 About the Project
 
-**“BEYOND THE FACADE”** is a complete, hybrid hardware-software engineering system designed to acquire, process, visualize, and analyze physiological pulse waves (Photoplethysmogram / PPG) and heart rate dynamics in real-time.
+**BEYOND THE FACADE** is a hardware + software system that measures a person's pulse signal and displays it in real time.
 
-* **30% Hardware:** Arduino Uno/Nano + Optical Pulse Sensor (A0) + SSD1306 128×64 I2C OLED display (0x3C).
-* **70% Software:** Real-time Python telemetry server (FastAPI + WebSockets + pyserial), high-performance HTML5 Canvas Serial Plotter oscilloscope, baseline variance engine, session recorder, and CSV exporter.
+The project combines:
+
+* **30% Hardware** – Arduino + Pulse Sensor + OLED
+* **70% Software** – Python + Web Dashboard + Data Analysis
+
+The system can show the **live pulse waveform, BPM, changes from a baseline, and recorded data**.
 
 ---
 
-## 2. Project Architecture
+## 🔹 How It Works
 
 ```text
-beyond_the_facade/
-├── arduino/
-│   ├── beyond_the_facade.ino    # Arduino firmware with non-blocking serial stream and OLED
-│   └── README_ARDUINO.md        # Hardware wiring diagram and flashing guide
-├── backend/
-│   ├── server.py                # FastAPI app, static file server, and WebSocket broadcaster
-│   ├── serial_reader.py         # PySerial background thread, auto port scanner, packet parser
-│   ├── demo_simulator.py        # Realistic PPG pulse waveform generator (Demo Mode)
-│   └── data_logger.py           # Session lifecycle manager, baseline calculator, and CSV logger
-├── frontend/
-│   ├── index.html               # Engineering dashboard structure and telemetry layouts
-│   ├── style.css                # Dark-mode oscilloscope styling and responsive grid
-│   └── app.js                   # WebSocket handler, Canvas 60 FPS oscilloscope, session UX
-├── data/
-│   └── sessions/                # Output directory for recorded session CSVs and summaries
-├── requirements.txt             # Python dependencies
-└── README.md                    # This documentation file
+Pulse Sensor
+     ↓
+  Arduino
+     ↓
+ USB Serial
+     ↓
+ Python Backend
+     ↓
+ Web Dashboard
+     ↓
+ Waveform + BPM + Analysis
+```
+
+The Arduino reads the pulse sensor and sends the data to the computer.
+The Python software receives the data and displays it on a live dashboard.
+
+---
+
+## 🔹 Hardware
+
+* Arduino Uno/Nano
+* Optical Pulse Sensor
+* SSD1306 128×64 OLED
+* USB Cable
+
+The pulse sensor is connected to **A0** and the OLED uses **I²C**.
+
+---
+
+## 🔹 Main Features
+
+### 1. Live Pulse Waveform
+
+The website displays the pulse signal as a real-time graph, similar to a basic oscilloscope.
+
+**Screenshot 1 – Live Dashboard**
+
+📷 *Insert screenshot here*
+
+---
+
+### 2. Live BPM
+
+The current heart rate is displayed clearly on the dashboard.
+
+Example:
+
+```text
+BPM
+78
+```
+
+The OLED can also display the BPM locally.
+
+---
+
+### 3. Baseline Comparison
+
+When a session starts, the system records an initial baseline.
+
+It then compares the current BPM with the baseline:
+
+```text
+Baseline BPM
+Current BPM
+Δ BPM
+% Change
+```
+
+This demonstrates how physiological changes can be monitored over time.
+
+---
+
+### 4. Session Recording
+
+The user can:
+
+```text
+START
+   ↓
+MONITOR
+   ↓
+PAUSE / RESUME
+   ↓
+END
+```
+
+The collected data can be saved as a **CSV file** for further analysis.
+
+---
+
+### 5. Demo Mode
+
+The project also includes a simulated pulse waveform.
+
+This allows the software to be demonstrated even when the physical sensor is not connected.
+
+A clear message is shown:
+
+```text
+DEMO MODE — SIMULATED DATA
 ```
 
 ---
 
-## 3. Communication Protocol
+## 🔹 Project Screenshots
 
-The Arduino sketch transmits machine-readable packets formatted as:
-```text
-<RAW_SIGNAL>,<BPM>\n
+### Screenshot 1 — Dashboard
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f973a9d0-ddf9-4b6b-b7b1-3df940329958" />
+
+📷 *Insert screenshot of the main website*
+
+### Screenshot 2 — Hardware
+<img width="720" height="1600" alt="image" src="https://github.com/user-attachments/assets/827592e2-4925-4681-8b51-cc32ab1c79eb" />
+
+📷 *Insert screenshot of Arduino + Pulse Sensor + OLED*
+
+
+
+---
+
+## 🎥 Live Demo
+
+**Watch the complete demonstration:**
+https://drive.google.com/file/d/1qXf5A1oV0NOyWTrxfwafUFV1CPnIQDpB/view?usp=drivesdk
+🔗 **[INSERT LIVE DEMO VIDEO LINK]**
+
+The video demonstrates:
+
+1. Hardware setup
+2. Pulse sensing
+3. Arduino data transmission
+4. Live waveform
+5. BPM display
+6. Baseline monitoring
+7. Session recording
+8. Data export
+
+---
+
+## 🔹 Software
+
+The project uses:
+
+* **Arduino IDE** – Arduino programming
+* **Python** – Backend and data processing
+* **FastAPI** – Web server
+* **WebSockets** – Real-time communication
+* **PySerial** – Arduino serial communication
+* **HTML/CSS/JavaScript** – Dashboard
+* **HTML5 Canvas** – Live waveform
+
+---
+
+## 🔹 Running the Project
+
+Install the required Python packages:
+
+```powershell
+pip install -r requirements.txt
 ```
-* **RAW_SIGNAL:** 0–1023 analog ADC reading from Pulse Sensor on pin `A0`.
-* **BPM:** Instantaneous heart rate computed by `PulseSensorPlayground`.
-* **Streaming Rate:** ~33 Hz (interval: 30 ms) using non-blocking `millis()`.
-* **OLED Refresh Rate:** ~5 Hz (interval: 200 ms) to prevent I2C bus stalling.
 
----
+Start the server:
 
-## 4. Key Features
-
-1. **Live Serial Plotter Oscilloscope:**
-   - 60 FPS HTML5 Canvas rendering of the raw pulse waveform.
-   - Dual scaling modes: Centered dynamic auto-scaling and full 0–1023 ADC range.
-   - Optical threshold reference line at 550.
-   - Pause, resume, and clear controls.
-
-2. **Live Heart Rate Telemetry:**
-   - Giant central digital BPM readout.
-   - Beat-synchronized pulsing heart icon.
-   - Physiological status chip (`RESTING`, `ELEVATED`, `HIGHER RESPONSE`).
-
-3. **Baseline Analysis Engine:**
-   - "START SESSION" automatically acquires an initial 15-second baseline period.
-   - Real-time computing of Current BPM, Absolute Delta (Δ), and Percentage Response Change (+%).
-
-4. **Session Recording & CSV Export:**
-   - Start, pause, resume, and end session controls with high-precision stopwatch timer.
-   - Generates comprehensive session summary (Avg, Min, Max, Baseline, Max Change, Duration).
-   - Direct export to standardized CSV files containing `timestamp_iso, elapsed_seconds, raw_signal, bpm, mode`.
-
-5. **Demo Mode (Presentation Mode):**
-   - High-fidelity physiological PPG simulation with realistic systolic peak, dicrotic notch, diastolic wave, baseline respiratory wander, and heart rate variability (HRV).
-   - High-visibility banner `DEMO MODE — SIMULATED DATA` prevents confusion with live hardware.
-
----
-
-## 5. Running the Application
-
-### 1. Prerequisites
-- Python 3.10+ (installed automatically in `.venv`).
-
-### 2. Launching the Backend Server
-In PowerShell:
 ```powershell
 .\.venv\Scripts\python.exe -m uvicorn backend.server:app --host 127.0.0.1 --port 8000
 ```
 
-### 3. Accessing the Dashboard
-Open your web browser and navigate to:
+Then open:
+
 ```text
 http://127.0.0.1:8000
 ```
 
-### 4. Flashing the Arduino
-1. Open `arduino/beyond_the_facade.ino` in Arduino IDE.
-2. Ensure `PulseSensor Playground` and `Adafruit SSD1306` libraries are installed.
-3. Upload to your Arduino.
-4. On the web dashboard, select your Arduino's COM port from the dropdown and click **CONNECT**.
+Connect the Arduino and select its **COM port**.
+
+---
+
+## 🔹 Data Output
+
+Recorded sessions can be exported as CSV files containing:
+
+```text
+Timestamp
+Elapsed Time
+Raw Pulse Signal
+BPM
+Mode
+```
+
+This data can later be analysed using Excel, Python, MATLAB, or other software.
+
+---
+
+## 🔹 Future Scope
+
+The system can later be expanded with:
+
+* Better signal filtering
+* Motion-artifact detection
+* HRV analysis
+* Multiple sensors
+* ESP32 wireless communication
+* Advanced signal processing
+* Machine-learning experiments
+
+---
+
+## 🔹 Conclusion
+
+**BEYOND THE FACADE** demonstrates a complete sensor-to-software pipeline:
+
+**Sense → Process → Visualize → Analyse → Record**
+
+It combines a simple physiological sensor with a modern software dashboard to create an affordable real-time monitoring prototype.
